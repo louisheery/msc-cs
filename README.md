@@ -1,2 +1,2 @@
-# msc-computing
-Coursework &amp; Projects Completed as part of my MSc Computer Science
+# MSc Computer Science
+Coursework &amp; Projects completed as part of my MSc Computer Science
