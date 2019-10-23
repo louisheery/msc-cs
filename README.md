@@ -6,7 +6,7 @@
 Repository containing the Coursework &amp; Projects completed as part of my MSc Computer Science (2019/20).
 
 ### [C++](cpp)
-- [Sudoku](cpp/sudoku) -- a sudoku solver
+- [Sudoku](cpp/sudoku) – a sudoku solver
 
 ### [Databases](databases)
 
