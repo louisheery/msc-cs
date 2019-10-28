@@ -1,0 +1,9 @@
+// =================== Question 5 =================== //
+
+Mystery1.dat Sudoku puzzle IS solvable:
+- Number of Iterations required: 421488
+
+Mystery2.dat Sudoku puzzle DOES NOT have a solution
+
+Mystery1.dat Sudoku puzzle IS solvable:
+- Number of Iterations required: 14076
