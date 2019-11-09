@@ -30,4 +30,5 @@ public:
   int setupEnigma(int numberOfArgs, char** inputFiles);
   char decodeCharacter(char inputCharacter);
   void rotate();
+  void initialCheck();
 };

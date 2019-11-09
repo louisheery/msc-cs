@@ -59,6 +59,8 @@ int Enigma::setupRotorPos(char* rotorPosFile) {
     return 8;
   }
 
+  initialCheck();
+
   return 0;
 }
 
@@ -67,40 +69,40 @@ char Enigma::decodeCharacter(char inputCharacter) {
   // Rotate the Rotors of the Enigma machine by 1 turn
   rotate();
 
-  cout << endl;
-  cout << "---------------" << endl;
+  //cout << endl;
+  //cout << "---------------" << endl;
   // Inputs 1 CHARACTER -> Convert to its Index Value in Alphabet
   int inputCharacterIndex = charToAlphabetIndex(inputCharacter);
-  cout << "Input = " << alphabetIndexToChar(inputCharacterIndex) << inputCharacterIndex << endl;
+  //cout << "Input = " << alphabetIndexToChar(inputCharacterIndex) << inputCharacterIndex << endl;
 
   // Goes through enigma machine process, accessing the rotors, reflectors and plugboardFile
 
   // Goes through the Plugboard forwards
   inputCharacterIndex = plugboard->forward(inputCharacterIndex);
-  cout << "After Plugboard = " << alphabetIndexToChar(inputCharacterIndex) << inputCharacterIndex << endl;
+  //cout << "After Plugboard = " << alphabetIndexToChar(inputCharacterIndex) << inputCharacterIndex << endl;
 
 
   // Goes through all of the Rotors in the machine forwards
   for (int i = numberOfRotors - 1; i >= 0; i--) {
     inputCharacterIndex = rotors[i]->forward(inputCharacterIndex);
-    cout << "After Rotor = " << alphabetIndexToChar(inputCharacterIndex) << inputCharacterIndex  << endl;
+    //cout << "After Rotor = " << alphabetIndexToChar(inputCharacterIndex) << inputCharacterIndex  << endl;
   }
 
 
   // Goes through the Reflector
   inputCharacterIndex = reflector->forward(inputCharacterIndex);
-  cout << "After Reflector = " << alphabetIndexToChar(inputCharacterIndex) << inputCharacterIndex << endl;
+  //cout << "After Reflector = " << alphabetIndexToChar(inputCharacterIndex) << inputCharacterIndex << endl;
 
   // Goes through all of the Rotors in the machine backwards
   for (int i = 0; i < numberOfRotors; i++) {
     inputCharacterIndex = rotors[i]->backward(inputCharacterIndex);
   }
-  cout << "After Rotor backwards = " << alphabetIndexToChar(inputCharacterIndex) << inputCharacterIndex << endl;
+  //cout << "After Rotor backwards = " << alphabetIndexToChar(inputCharacterIndex) << inputCharacterIndex << endl;
 
   // Goes through the Plugboard backwards
   inputCharacterIndex = plugboard->backward(inputCharacterIndex);
-  cout << "After Plugboard Backwards = " << alphabetIndexToChar(inputCharacterIndex) << inputCharacterIndex << endl;
-  cout << "---------------" << endl;
+  //cout << "After Plugboard Backwards = " << alphabetIndexToChar(inputCharacterIndex) << inputCharacterIndex << endl;
+  //cout << "---------------" << endl;
   // Convert the Character Index value back to a Char value
   char outputCharacter = alphabetIndexToChar(inputCharacterIndex);
 
@@ -111,35 +113,44 @@ char Enigma::decodeCharacter(char inputCharacter) {
 
 }
 
+void Enigma::initialCheck() {
+  for (int i = numberOfRotors - 1; i >= 0; i--) {
+    rotors[i]->checkRotorIsAtNotchPosition();
+  }
+
+}
 
 void Enigma::rotate() {
 
   for (int i = numberOfRotors - 1; i >= 0; i--) {
-
-    rotors[i]->checkRotorIsAtNotchPosition();
+    //rotors[i]->checkRotorIsAtNotchPosition();
 
     // Rotor 1 always rotates by 1 position
     if (i == (numberOfRotors - 1)) {
       int currentPosition = rotors[i]->findCurrentPositionOfRotor();
       currentPosition++;
       rotors[i]->setCurrentPositionOfRotor(currentPosition);
+      rotors[i]->checkRotorIsAtNotchPosition();
 
     // Check whether any other rotor should be rotated:
     // Only apply if rotor != the first rotor
     } else {
 
+
       // If the previous rotor (e.g. rotor 1) is setup to move -> then move this rotor (e.g. rotor 2)
       if (rotors[i+1]->rotorSetupToMove == true) {
         int currentPosition = rotors[i]->findCurrentPositionOfRotor();
         currentPosition++;
+        //cout << endl << "ROTATED ROTOR " << i << endl;
         rotors[i]->setCurrentPositionOfRotor(currentPosition);
 
         // Set the rotorSetupToMove back to false
         rotors[i+1]->rotorSetupToMove = false;
+
+        rotors[i]->checkRotorIsAtNotchPosition();
+
       }
     }
-
-    rotors[i]->checkRotorIsAtNotchPosition();
 
   }
 }
