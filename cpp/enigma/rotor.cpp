@@ -83,27 +83,18 @@ int Rotor::forward(int characterIndex) {
   cout << "Character = " << alphabetIndexToChar(characterIndex) << endl;
   cout << "Current Rotor position = " << findCurrentPositionOfRotor();
   characterIndex = characterIndex + findCurrentPositionOfRotor();
-  //cout << "CharacterIndex" << characterIndex << endl;
-  if (characterIndex > 25) {
-    characterIndex = characterIndex - 26;
-  }
+  cout << "CharacterIndex" << characterIndex << endl;
 
-  if (characterIndex < 0) {
-    characterIndex = characterIndex + 26;
-  }
+  normaliseIndexPosition(characterIndex);
 
   characterIndex = rotorConnections[characterIndex];
-  //cout << characterIndex << "-_-" << endl;
+  cout << characterIndex << "-_-" << endl;
+
+  normaliseIndexPosition(characterIndex);
 
   characterIndex = characterIndex - findCurrentPositionOfRotor();
 
-  if (characterIndex > 25) {
-    characterIndex = characterIndex - 26;
-  }
-
-  if (characterIndex < 0) {
-    characterIndex = characterIndex + 26;
-  }
+  normaliseIndexPosition(characterIndex);
 
   cout << " == " << characterIndex << " == " << endl;
   cout << "_________ROTOR__________" << endl;
@@ -113,59 +104,46 @@ int Rotor::forward(int characterIndex) {
 
 int Rotor::backward(int characterIndex) {
 
-  //cout << endl;
-  //cout << "_________ROTOR__________" << endl;
-  //cout << "@1 = " << characterIndex << endl;
+  cout << endl;
+  cout << "_________ROTOR__________" << endl;
+  cout << "@1 = " << characterIndex << endl;
   characterIndex = characterIndex + findCurrentPositionOfRotor();
 
-  //cout << "@2 = " << characterIndex << endl;
+  cout << "@2 = " << characterIndex << endl;
 
-  if (characterIndex > 25) {
-    characterIndex = characterIndex - 26;
-  }
+  normaliseIndexPosition(characterIndex);
 
-  //cout << "@3 = " << characterIndex << endl;
+  cout << "@3 = " << characterIndex << endl;
 
-  if (characterIndex < 0) {
-    characterIndex = characterIndex + 26;
-  }
+  normaliseIndexPosition(characterIndex);
 
-  //cout << "@4 = " << characterIndex << endl;
+  cout << "@4 = " << characterIndex << endl;
 
-  for (int r = 0; r < 26; r++) {
-    //cout << endl << "-" << r <<  " @ "<< rotorConnections[r] << "-" << endl;
-  }
-
-  //characterIndex = rotorConnections[characterIndex];
-
-  //
   for (int i = 0; i < 26; i++) {
 
     if (characterIndex == rotorConnections[i]) {
-      //cout << "$$ " << i << "$$";
+      cout << "$$ " << i << "$$";
       characterIndex = i;
       break;
     }
   }
 
-  //cout << "@5 = " << characterIndex << endl;
+  normaliseIndexPosition(characterIndex);
+
+  cout << "@5 = " << characterIndex << endl;
 
   characterIndex = characterIndex - findCurrentPositionOfRotor();
 
-  //cout << "@6 = " << characterIndex << endl;
+  cout << "@6 = " << characterIndex << endl;
 
-  if (characterIndex > 25) {
-    characterIndex = characterIndex - 26;
-  }
+  normaliseIndexPosition(characterIndex);
 
-  //cout << "@7 = " << characterIndex << endl;
+  cout << "@7 = " << characterIndex << endl;
 
-  if (characterIndex < 0) {
-    characterIndex = characterIndex + 26;
-  }
+  normaliseIndexPosition(characterIndex);
 
-  //cout << "@8 = " << characterIndex << endl;
-  //cout << "_________ROTOR__________" << endl;
+  cout << "@8 = " << characterIndex << endl;
+  cout << "_________ROTOR__________" << endl;
   return characterIndex;
 
 }

@@ -45,7 +45,7 @@ int Enigma::setupRotorPos(char* rotorPosFile) {
   while (infile >> currentNumber) {
 
     if (i < numberOfRotors) {
-      cout << "()()()" << currentNumber << "()()()" << endl;
+      //cout << "()()()" << currentNumber << "()()()" << endl;
       rotors[i]->setCurrentPositionOfRotor(currentNumber);
       i++;
     } else {
@@ -81,7 +81,7 @@ char Enigma::decodeCharacter(char inputCharacter) {
 
 
   // Goes through all of the Rotors in the machine forwards
-  for (int i = 0; i < numberOfRotors; i++) {
+  for (int i = numberOfRotors - 1; i >= 0; i--) {
     inputCharacterIndex = rotors[i]->forward(inputCharacterIndex);
     cout << "After Rotor = " << alphabetIndexToChar(inputCharacterIndex) << inputCharacterIndex  << endl;
   }
@@ -92,7 +92,7 @@ char Enigma::decodeCharacter(char inputCharacter) {
   cout << "After Reflector = " << alphabetIndexToChar(inputCharacterIndex) << inputCharacterIndex << endl;
 
   // Goes through all of the Rotors in the machine backwards
-  for (int i = numberOfRotors - 1; i >= 0; i--) {
+  for (int i = 0; i < numberOfRotors; i++) {
     inputCharacterIndex = rotors[i]->backward(inputCharacterIndex);
   }
   cout << "After Rotor backwards = " << alphabetIndexToChar(inputCharacterIndex) << inputCharacterIndex << endl;
@@ -114,12 +114,12 @@ char Enigma::decodeCharacter(char inputCharacter) {
 
 void Enigma::rotate() {
 
-  for (int i = 0; i < numberOfRotors; i++) {
+  for (int i = numberOfRotors - 1; i >= 0; i--) {
 
     rotors[i]->checkRotorIsAtNotchPosition();
 
     // Rotor 1 always rotates by 1 position
-    if (i == 0) {
+    if (i == (numberOfRotors - 1)) {
       int currentPosition = rotors[i]->findCurrentPositionOfRotor();
       currentPosition++;
       rotors[i]->setCurrentPositionOfRotor(currentPosition);
@@ -129,13 +129,13 @@ void Enigma::rotate() {
     } else {
 
       // If the previous rotor (e.g. rotor 1) is setup to move -> then move this rotor (e.g. rotor 2)
-      if (rotors[i-1]->rotorSetupToMove == true) {
+      if (rotors[i+1]->rotorSetupToMove == true) {
         int currentPosition = rotors[i]->findCurrentPositionOfRotor();
         currentPosition++;
         rotors[i]->setCurrentPositionOfRotor(currentPosition);
 
         // Set the rotorSetupToMove back to false
-        rotors[i-1]->rotorSetupToMove = false;
+        rotors[i+1]->rotorSetupToMove = false;
       }
     }
 
