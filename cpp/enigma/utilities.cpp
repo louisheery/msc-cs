@@ -28,6 +28,18 @@ map<int, string> const errors = {
 };
 */
 
+void normaliseIndexPosition(int &indexPosition) {
+
+  while (indexPosition > 25) {
+    indexPosition -= 26;
+  }
+
+  while (indexPosition < 0) {
+    indexPosition += 26;
+  }
+  
+}
+
 
 char alphabetIndexToChar(int index) {
 
