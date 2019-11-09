@@ -36,6 +36,8 @@ int main(int argc, char** argr) {
     cout << outputStringChar;
   }
 
+  cout << endl;
+
   return 0;
 
 }
