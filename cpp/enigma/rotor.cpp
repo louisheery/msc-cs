@@ -1,5 +1,5 @@
 // Author: Louis Heery (lah119)
-// Last Updated:
+// Last Updated: 9th November 2019
 
 #include <iostream>
 #include <fstream>
@@ -18,45 +18,58 @@ Rotor::Rotor(char* rotorFile, int rotorNumberInput) {
 
 int Rotor::setupRotor(char* rotorFile, int rotorNumberInput) {
 
+  // Sets rotorNumber attribute of Rotor Object
   rotorNumber = rotorNumberInput;
 
+  // Create in file stream, and check file was opened correctly
   ifstream infile;
   infile.open(rotorFile);
+
+  if(!infile.is_open())
+  {
+    cerr << "ERROR OPENING CONFIGURATION FILE named " << rotorFile << endl;
+    return 11;
+  }
 
   int i = 0;
   int j = 0;
   int currentNumber;
-  bool hasBeenConnected[52];
+  bool hasBeenConnected[52]; // Remembers if a letter is already connected to another
   fill_n(hasBeenConnected, 52, false);
 
+  // Loops through each input number
   while (infile >> currentNumber) {
-    // NEED TO FIND A WAY TO CHECK IF A CHARACTER WAS INPUTTED
-    if (/*(currentNumber == NULL) || */ ((int) currentNumber != currentNumber)) {
-      cout << "ERROR 2 : INVALID_INPUT_CHARACTER";
+
+    // Checks that inputted value is an integer
+    if ((int) currentNumber != currentNumber) {
+      cerr << "ERROR 2 : INVALID_INPUT_CHARACTER";
       return 2;
     }
 
+    // Checks that inputted value is in range of Alphabet index
     if (currentNumber < 0 || currentNumber > 25) {
-      cout << "ERROR 3 : INVALID_INDEX" << endl;
+      cerr << "ERROR 3 : INVALID_INDEX" << endl;
       return 3;
     }
 
+    // First 26 Input Numbers correspond to Rotor mapping
     if (i < 26) {
 
+      // Checks that letter isn't being connected to multiple letters
       if (hasBeenConnected[i] == true) {
-        //cout << i;
-        cout << "ERROR 9 : INVALID_ROTOR_MAPPING" << endl;
+        cerr << "ERROR 9 : INVALID_ROTOR_MAPPING" << endl;
         return 9;
       } else {
-        //cout << currentNumber;
         rotorConnections[i] = currentNumber;
         rotorConnections[i] = currentNumber;
         hasBeenConnected[i] = true;
       }
 
       i++;
+
+    // Additional Input Numbers correspond to Rotor Notch locations
     } else {
-      // ROTOR NOTCHES SETUP HERE
+      // Sets Rotor Notch location
       rotorNotches[j] = currentNumber;
       j++;
     }
@@ -67,8 +80,6 @@ int Rotor::setupRotor(char* rotorFile, int rotorNumberInput) {
 
   numberOfNotches = j;
 
-  // SHOULD I CHECK THAT EXACTLY 26 PARAMETERS HAVE BEEN PASSED IN ???
-
   infile.close();
 
 
@@ -78,72 +89,43 @@ int Rotor::setupRotor(char* rotorFile, int rotorNumberInput) {
 
 int Rotor::forward(int characterIndex) {
 
-  //cout << " == " << characterIndex << " == " << endl;
-  //cout << "_________ROTOR__________" << endl;
-  //cout << "Character = " << alphabetIndexToChar(characterIndex) << endl;
-  //cout << "Current Rotor position = " << findCurrentPositionOfRotor();
+  // Adds current position of Rotor to get relative characterIndex position
   characterIndex = characterIndex + findCurrentPositionOfRotor();
-  //cout << "CharacterIndex" << characterIndex << endl;
-
   normaliseIndexPosition(characterIndex);
 
+  // Obtains mapping of Rotor connection from the linked list
   characterIndex = rotorConnections[characterIndex];
-  //cout << characterIndex << "-_-" << endl;
-
   normaliseIndexPosition(characterIndex);
 
+  // Subtracts current position of Rotor to get original characterIndex position
   characterIndex = characterIndex - findCurrentPositionOfRotor();
+  normaliseIndexPosition(characterIndex); // Incase characterIndex > 25
 
-  normaliseIndexPosition(characterIndex);
-
-  //cout << " == " << characterIndex << " == " << endl;
-  //cout << "_________ROTOR__________" << endl;
   return characterIndex;
 
 }
 
 int Rotor::backward(int characterIndex) {
 
-  //cout << endl;
-  //cout << "_________ROTOR__________" << endl;
-  //cout << "@1 = " << characterIndex << endl;
+  // Adds current position of Rotor to get relative characterIndex position
   characterIndex = characterIndex + findCurrentPositionOfRotor();
-
-  //cout << "@2 = " << characterIndex << endl;
-
   normaliseIndexPosition(characterIndex);
 
-  //cout << "@3 = " << characterIndex << endl;
-
-  normaliseIndexPosition(characterIndex);
-
-  //cout << "@4 = " << characterIndex << endl;
-
+  // Loops through all 26 letters to find a match on the Rotor
   for (int i = 0; i < 26; i++) {
 
+    // Checks if current letter is a match
     if (characterIndex == rotorConnections[i]) {
-      //cout << "$$ " << i << "$$";
-      characterIndex = i;
+      characterIndex = i; // Reassigns value of characterIndex
       break;
     }
   }
 
   normaliseIndexPosition(characterIndex);
 
-  //cout << "@5 = " << characterIndex << endl;
-
   characterIndex = characterIndex - findCurrentPositionOfRotor();
-
-  //cout << "@6 = " << characterIndex << endl;
-
   normaliseIndexPosition(characterIndex);
 
-  //cout << "@7 = " << characterIndex << endl;
-
-  normaliseIndexPosition(characterIndex);
-
-  //cout << "@8 = " << characterIndex << endl;
-  //cout << "_________ROTOR__________" << endl;
   return characterIndex;
 
 }
@@ -153,13 +135,16 @@ int Rotor::findCurrentPositionOfRotor() {
 }
 
 void Rotor::setCurrentPositionOfRotor(int position) {
-  currentPositionOfRotor = position;
+  currentPositionOfRotor = position; // Allows manipulation of private attribute
   return;
 }
 
 void Rotor::checkRotorIsAtNotchPosition() {
 
-  // If the Rotor X = at position where
+  // Loops through each notch location
+  // and checks if a notch is equal to current position of rotors
+  // IF TRUE -> then rotor is setup to cause adjacent rotor to rotate on the
+  //            next rotation of rotor
   for (int j = 0; j < numberOfNotches; j++) {
     normaliseIndexPosition(currentPositionOfRotor);
     if (currentPositionOfRotor == rotorNotches[j]) {
