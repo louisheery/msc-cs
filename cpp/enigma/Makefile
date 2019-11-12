@@ -1,21 +1,20 @@
-# OBJ = main.o plugboard.o reflector.o rotor.o machine.o enigma.o
-OBJ = main.o plugboard.o enigma.o
+OBJ = main.o plugboard.o reflector.o rotor.o enigma.o utilities.o
 EXE = enigma
 CXX = g++
 CPPFLAGS = -Wall -g
 
 $(EXE): $(OBJ)
-        $(CXX) $(CPPFLAGS) $(OBJ) -o $(EXE)
+	$(CXX) $(CPPFLAGS) $(OBJ) -o $(EXE)
 
 %.o: %.cpp
-        $(CXX) $(CPPFLAGS) -c $<
+	$(CXX) $(CPPFLAGS) -c $<
 
-main.o: enigma.h errors.h
-enigma: plugboard.h enigma.h errors.h
-# reflector.o: reflector.h enigma.h errors.h
-# rotor.o: rotor.h enigma.h errors.h
-# machine.o: machine.h enigma.h errors.h
-enigma.o: enigma.h errors.h
+main.o: enigma.hpp errors.h utilities.hpp
+utilities.o: utilities.hpp errors.h
+plugboard.o: plugboard.hpp enigma.hpp errors.h utilities.hpp
+reflector.o: reflector.hpp enigma.hpp errors.h utilities.hpp
+rotor.o: rotor.hpp enigma.hpp errors.h utilities.hpp
+enigma.o: enigma.hpp errors.h utilities.hpp
 
 clean:
-        rm -f *.o
+	rm -f *.o
