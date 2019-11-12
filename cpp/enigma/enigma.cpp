@@ -1,5 +1,5 @@
 // Author: Louis Heery (lah119)
-// Last Updated: 9th November 2019
+
 
 #include <iostream>
 #include <fstream>
@@ -7,6 +7,7 @@
 #include <cstring>
 #include <cassert>
 #include <exception>
+#include "errors.h"
 #include "enigma.hpp"
 #include "utilities.hpp"
 #include <stdio.h>
@@ -43,7 +44,7 @@ int Enigma::setupRotorPos(char* rotorPosFile) {
   if(!infile.is_open())
   {
     cerr << "ERROR OPENING CONFIGURATION FILE named " << rotorPosFile << endl;
-    return 11;
+    throw ERROR_OPENING_CONFIGURATION_FILE;
   }
 
   int i = 0;
@@ -64,8 +65,8 @@ int Enigma::setupRotorPos(char* rotorPosFile) {
 
   // If Number of Input variables aren't equal to the number of Rotors
   if (i != numberOfRotors) {
-    cerr << "ERROR 8 : NO_ROTOR_STARTING_POSITION";
-    return 8;
+    cerr << "No starting position for rotor " << i << " in rotor position file: " << rotorPosFile << endl;
+    throw NO_ROTOR_STARTING_POSITION;
   }
 
   // Checks whether any of the Rotors Notches are setup to rotate an adjacent
