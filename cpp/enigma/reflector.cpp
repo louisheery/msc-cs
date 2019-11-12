@@ -1,5 +1,5 @@
 // Author: Louis Heery (lah119)
-// Last Updated: 9th November 2019
+
 
 #include <iostream>
 #include <fstream>
@@ -7,6 +7,7 @@
 #include <cstring>
 #include <cassert>
 #include <exception>
+#include "errors.h"
 #include "reflector.hpp"
 #include "utilities.hpp"
 using namespace std;
@@ -25,7 +26,7 @@ int Reflector::setupReflector(char* reflectorFile) {
   if(!infile.is_open())
   {
     cerr << "ERROR OPENING CONFIGURATION FILE named " << reflectorFile << endl;
-    return 11;
+    throw ERROR_OPENING_CONFIGURATION_FILE;
   }
 
   int i = 0;
@@ -39,14 +40,25 @@ int Reflector::setupReflector(char* reflectorFile) {
 
     // Checks that inputted value is an integer
     if ((int) currentNumber != currentNumber) {
-      cerr << "ERROR 2 : INVALID_INPUT_CHARACTER";
-      return 2;
+      cerr << "Non-numeric character in reflector file " << reflectorFile;
+      throw INVALID_INPUT_CHARACTER;
+    }
+
+    // Checks that inputted value is an integer
+    if ((int) currentNumber != currentNumber) {
+      cerr << "Non-numeric character in reflector file " << reflectorFile;
+      throw INVALID_INPUT_CHARACTER;
     }
 
     // Checks that inputted value is in range of Alphabet index
     if (currentNumber < 0 || currentNumber > 25) {
       cerr << "ERROR 3 : INVALID_INDEX" << endl;
-      return 3;
+      throw INVALID_INDEX;
+    }
+
+    if (i > 26) {
+      cerr << "Incorrect (odd) number of parameters in reflector file " << reflectorFile << endl;
+      throw INCORRECT_NUMBER_OF_REFLECTOR_PARAMETERS;
     }
 
     // Checks a letter isn't being connected to itself by Reflector
@@ -54,15 +66,15 @@ int Reflector::setupReflector(char* reflectorFile) {
       firstNumber = currentNumber;
     } else {
       if (currentNumber == firstNumber) {
-        cerr << "ERROR 9 : INVALID_REFLECTOR_MAPPING" << endl;
-        return 9;
+        cerr << "Incorrect (odd) number of parameters in reflector file " << reflectorFile << endl;
+        throw INVALID_REFLECTOR_MAPPING;
       }
     }
 
     // Checks that letter isn't being connected to multiple letters
     if (hasBeenConnected[i] == true) {
-      cerr << "ERROR 9 : INVALID_REFLECTOR_MAPPING" << endl;
-      return 9;
+      cerr << "Incorrect (odd) number of parameters in reflector file " << reflectorFile << endl;
+      throw INVALID_REFLECTOR_MAPPING;
     } else {
       reflectorConnections[i] = currentNumber;
       hasBeenConnected[i] = true;
@@ -72,9 +84,14 @@ int Reflector::setupReflector(char* reflectorFile) {
   }
 
   // Checks that all letters in Plugboard are connected to another
+  if (i%2 != 0) {
+    cerr << "Incorrect (odd) number of parameters in reflector file " << reflectorFile << endl;
+    throw INCORRECT_NUMBER_OF_REFLECTOR_PARAMETERS;
+  }
+
   if (i != 26) {
-    cerr << "ERROR 10 : INCORRECT_NUMBER_OF_REFLECTOR_PARAMETERS" << endl;
-    return 10;
+    cerr << "Insufficient number of mappings in reflector file: " << reflectorFile << endl;
+    throw INCORRECT_NUMBER_OF_REFLECTOR_PARAMETERS;
   }
 
   infile.close();

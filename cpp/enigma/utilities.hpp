@@ -1,5 +1,5 @@
 // Author: Louis Heery (lah119)
-// Last Updated: 9th November 2019
+
 
 #include <string>
 #include <functional>

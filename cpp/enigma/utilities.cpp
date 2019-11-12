@@ -1,5 +1,5 @@
 // Author: Louis Heery (lah119)
-// Last Updated: 9th November 2019
+
 
 #include <iostream>
 #include <fstream>
@@ -8,6 +8,7 @@
 #include <cassert>
 #include <exception>
 #include <map>
+#include "errors.h"
 #include "utilities.hpp"
 using namespace std;
 

@@ -1,5 +1,5 @@
 // Author: Louis Heery (lah119)
-// Last Updated: 9th November 2019
+
 
 #include <iostream>
 #include <fstream>
@@ -8,6 +8,7 @@
 #include <cassert>
 #include <exception>
 #include "rotor.hpp"
+#include "errors.h"
 #include "utilities.hpp"
 using namespace std;
 
@@ -28,41 +29,40 @@ int Rotor::setupRotor(char* rotorFile, int rotorNumberInput) {
   if(!infile.is_open())
   {
     cerr << "ERROR OPENING CONFIGURATION FILE named " << rotorFile << endl;
-    return 11;
+    throw ERROR_OPENING_CONFIGURATION_FILE;
   }
 
   int i = 0;
   int j = 0;
   int currentNumber;
-  bool hasBeenConnected[52]; // Remembers if a letter is already connected to another
-  fill_n(hasBeenConnected, 52, false);
+  int hasBeenConnected[52]; // Remembers if a letter is already connected to another
+  fill_n(hasBeenConnected, 52, -1);
 
   // Loops through each input number
   while (infile >> currentNumber) {
 
     // Checks that inputted value is an integer
     if ((int) currentNumber != currentNumber) {
-      cerr << "ERROR 2 : INVALID_INPUT_CHARACTER";
-      return 2;
+      cerr << "Non-numeric character for mapping in rotor file " << rotorFile;
+      throw INVALID_INPUT_CHARACTER;
     }
 
     // Checks that inputted value is in range of Alphabet index
     if (currentNumber < 0 || currentNumber > 25) {
       cerr << "ERROR 3 : INVALID_INDEX" << endl;
-      return 3;
+      throw INVALID_INDEX;
     }
 
     // First 26 Input Numbers correspond to Rotor mapping
     if (i < 26) {
 
       // Checks that letter isn't being connected to multiple letters
-      if (hasBeenConnected[i] == true) {
-        cerr << "ERROR 9 : INVALID_ROTOR_MAPPING" << endl;
-        return 9;
+      if (hasBeenConnected[i] != -1) {
+        cerr << "Invalid mapping of input " << currentNumber << " to output " << (i) << " (output " << i << " is already mapped to from input " << hasBeenConnected[i] << ") in rotor file " << rotorFile << endl;
+        throw INVALID_ROTOR_MAPPING;
       } else {
         rotorConnections[i] = currentNumber;
-        rotorConnections[i] = currentNumber;
-        hasBeenConnected[i] = true;
+        hasBeenConnected[i] = currentNumber;
       }
 
       i++;
@@ -73,9 +73,11 @@ int Rotor::setupRotor(char* rotorFile, int rotorNumberInput) {
       rotorNotches[j] = currentNumber;
       j++;
     }
+  }
 
-
-
+  if (i < 26) {
+    cerr << "Not all inputs mapped in rotor file: " << rotorFile << endl;
+    throw INVALID_ROTOR_MAPPING;
   }
 
   numberOfNotches = j;
