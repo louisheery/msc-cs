@@ -1,6 +1,5 @@
 // Author: Louis Heery (lah119)
 
-
 #include <string>
 #include <functional>
 #include <map>
