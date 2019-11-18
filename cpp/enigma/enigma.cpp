@@ -1,6 +1,5 @@
 // Author: Louis Heery (lah119)
 
-
 #include <iostream>
 #include <fstream>
 #include <cstdio>
@@ -19,12 +18,12 @@ Enigma::Enigma(int numberOfArgs, char** inputFiles) {
 
   // Creates object instances of each part of Enigma machine
   plugboard = new Plugboard(inputFiles[1]);
-
   reflector = new Reflector(inputFiles[2]);
 
+  // Set number of Rotors based on number of input arguments
   numberOfRotors = numberOfArgs - 4;
 
-  // Rotors stored in Linked List of Rotor Objects
+  // Create Rotor(s) stored in Linked List of Rotor Objects
   rotors = new Rotor*[numberOfRotors];
 
   for (int i = 0; i < numberOfRotors; i++) {
@@ -37,21 +36,49 @@ Enigma::Enigma(int numberOfArgs, char** inputFiles) {
 
 int Enigma::setupRotorPos(char* rotorPosFile) {
 
+  int i = 0;
+  int currentNumber;
+
+  // Create in file stream, and check file was opened correctly
+  ifstream infilechecker;
+  infilechecker.open(rotorPosFile);
+
+  while (!infilechecker.eof()) {
+
+    infilechecker >> ws;
+
+    if (infilechecker.peek() == EOF) {
+      break;
+    }
+
+    infilechecker >> currentNumber;
+
+    if(infilechecker.fail()){
+      cerr << "Non-numeric character in rotor positions file " << rotorPosFile << endl;
+      throw NON_NUMERIC_CHARACTER;
+    }
+
+  }
+
+  infilechecker.close();
+
   ifstream infile;
   infile.open(rotorPosFile);
 
   // Check input file was sucessfully opened
   if(!infile.is_open())
   {
-    cerr << "ERROR OPENING CONFIGURATION FILE named " << rotorPosFile << endl;
+    cerr << "Could not open rotor position configuration file named: " << rotorPosFile << endl;
     throw ERROR_OPENING_CONFIGURATION_FILE;
   }
 
-  int i = 0;
-  int currentNumber;
-
   // Reads each Number in the Input File
   while (infile >> currentNumber) {
+
+    if (currentNumber < 0 || currentNumber > 25) {
+      cerr << "Rotor positions configuration file " << rotorPosFile;
+      cerr << "contains an index corresponding to a letter not in the alphabet" << endl;
+    }
 
     // Assigns each Number as the Current Position Variable of each Rotor object
     if (i < numberOfRotors) {
@@ -82,7 +109,7 @@ char Enigma::decodeCharacter(char inputCharacter) {
   // which are setup to rotate
   rotate();
 
-  // Inputs 1 CHARACTER -> Convert to its Index Value in Alphabet
+  // Inputs 1 Character -> Convert to its Index Value in Alphabet
   int inputCharacterIndex = charToAlphabetIndex(inputCharacter);
 
   // Input Character goes through each part of Enigma machine
@@ -157,5 +184,13 @@ void Enigma::rotate() {
 
 Enigma::~Enigma()
 {
-    //delete []s;
+  delete plugboard;
+  delete reflector;
+
+  for (int i = 0; i < numberOfRotors; i++) {
+    delete rotors[i];
+  }
+
+  delete[] rotors;
+
 }
