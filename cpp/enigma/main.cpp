@@ -1,6 +1,5 @@
 // Author: Louis Heery (lah119)
 
-
 #include <iostream>
 #include <fstream>
 #include <cstdio>
@@ -30,7 +29,7 @@ int main(int argc, char** argr) {
     return error;
   }
 
-
+  // Read in Input String to be Encoded, and find length
   string inputString;
   cin >> inputString;
   int stringLength = (int) inputString.length();
@@ -38,6 +37,7 @@ int main(int argc, char** argr) {
   // Enigma Machine is inputted with each input character in turn
   // Output produced by enigma machine is then outputted to cout
   for (int i = 0; i < stringLength; i++) {
+    // Check each character of string is a Letter in range (A-Z)
     int currentInputValue = static_cast<int>(inputString[i] - 'A');
       if (currentInputValue < 0 || currentInputValue >= 26) {
       	cerr << inputString[i] <<  " is not a valid input character (input characters must be upper case letters A-Z)!" << endl;
@@ -48,6 +48,7 @@ int main(int argc, char** argr) {
     cout << outputStringChar;
   }
 
+  delete enigma;
   return NO_ERROR;
 
 }
