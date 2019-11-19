@@ -1,6 +1,5 @@
 // Author: Louis Heery (lah119)
 
-
 #include <string>
 #include <functional>
 #include <iostream>
@@ -16,6 +15,7 @@ private:
 public:
 
   int rotorConnections[26]; // Defines letter mapping of Rotor
+  int hasBeenConnected[52]; // Remembers if a letter is already connected to another
   int rotorNotches[26]; // Location of Rotor Notches on the Rotor Object
   int numberOfNotches; // Number of Notches on the Rotor Object
   bool rotorSetupToMove; // Linked List of the number of rotors in the enigma.

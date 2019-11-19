@@ -1,6 +1,5 @@
 // Author: Louis Heery (lah119)
 
-
 #include <string>
 #include <functional>
 #include <iostream>
@@ -26,7 +25,7 @@ public:
   // INPUT: Char Array containing File address of file specifying the letter
   //         connections of the Plugboard.
   // OUTPUT: Returns 0 if correctly setup.
-  int setupPlugboard(char* plugboardFile);
+  void setupPlugboard(char* plugboardFile);
 
   // Function passes a single character through the Plugboard component of the
   // Enigma machine.

@@ -1,6 +1,5 @@
 // Author: Louis Heery (lah119)
 
-
 #include <iostream>
 #include <fstream>
 #include <cstdio>
@@ -22,23 +21,54 @@ int Rotor::setupRotor(char* rotorFile, int rotorNumberInput) {
   // Sets rotorNumber attribute of Rotor Object
   rotorNumber = rotorNumberInput;
 
+  // Initialise temporary variables
+  int i = 0;
+  int j = 0;
+  int currentNumber; // Stores current integer being read in from setup file
+
+  // Fill hasBeenConnected Array with -1 values
+  // (-1 represents that a rotor contact hasn't been connected)
+  for (int k = 0; k < 52; k++) {
+   hasBeenConnected[k] = -1;
+  }
+
+  // STEP 1: Checks that file doesn't contain non-numeric characters
+  // Create in file stream
+  ifstream infilechecker;
+  infilechecker.open(rotorFile);
+
+  // Loops through each input number to check for non-numeric characters
+  while (!infilechecker.eof()) {
+
+    infilechecker >> ws;
+
+    if (infilechecker.peek() == EOF) {
+      break;
+    }
+
+    infilechecker >> currentNumber;
+
+    // If ifstream reads a non-integer value, the following statement = true
+    if(infilechecker.fail()){
+      cerr << "Non-numeric character for mapping in rotor file " << rotorFile << endl;
+      throw NON_NUMERIC_CHARACTER;
+    }
+  }
+  infilechecker.close();
+
+  // STEP 2: Read in the Rotor setup file and setup Rotor
   // Create in file stream, and check file was opened correctly
   ifstream infile;
   infile.open(rotorFile);
 
+  // Checks configuration file was opened correctly
   if(!infile.is_open())
   {
-    cerr << "ERROR OPENING CONFIGURATION FILE named " << rotorFile << endl;
+    cerr << "Could not open rotor configuration file named: " << rotorFile << endl;
     throw ERROR_OPENING_CONFIGURATION_FILE;
   }
 
-  int i = 0;
-  int j = 0;
-  int currentNumber;
-  int hasBeenConnected[52]; // Remembers if a letter is already connected to another
-  fill_n(hasBeenConnected, 52, -1);
-
-  // Loops through each input number
+  // Loops through each Integer in Rotor File
   while (infile >> currentNumber) {
 
     // Checks that inputted value is an integer
@@ -49,22 +79,25 @@ int Rotor::setupRotor(char* rotorFile, int rotorNumberInput) {
 
     // Checks that inputted value is in range of Alphabet index
     if (currentNumber < 0 || currentNumber > 25) {
-      cerr << "ERROR 3 : INVALID_INDEX" << endl;
+      cerr << "Invalid rotor index character inputted of: " << currentNumber << endl;
       throw INVALID_INDEX;
     }
 
     // First 26 Input Numbers correspond to Rotor mapping
     if (i < 26) {
-
       // Checks that letter isn't being connected to multiple letters
-      if (hasBeenConnected[i] != -1) {
-        cerr << "Invalid mapping of input " << currentNumber << " to output " << (i) << " (output " << i << " is already mapped to from input " << hasBeenConnected[i] << ") in rotor file " << rotorFile << endl;
-        throw INVALID_ROTOR_MAPPING;
-      } else {
-        rotorConnections[i] = currentNumber;
-        hasBeenConnected[i] = currentNumber;
-      }
 
+      for (int l = 0; l < i; l++) {
+        if (hasBeenConnected[l] == currentNumber) {
+          cerr << "Invalid mapping of input " << i << " to output ";
+          cerr << (currentNumber) << " (output " << currentNumber;
+          cerr << " is already mapped to from input " << l;
+          cerr << ") in rotor file: " << rotorFile << endl;
+          throw INVALID_ROTOR_MAPPING;
+        }
+      }
+      hasBeenConnected[i] = currentNumber;
+      rotorConnections[i] = currentNumber;
       i++;
 
     // Additional Input Numbers correspond to Rotor Notch locations
@@ -75,6 +108,7 @@ int Rotor::setupRotor(char* rotorFile, int rotorNumberInput) {
     }
   }
 
+  // Checks whether all inputs are mapped
   if (i < 26) {
     cerr << "Not all inputs mapped in rotor file: " << rotorFile << endl;
     throw INVALID_ROTOR_MAPPING;
@@ -83,7 +117,6 @@ int Rotor::setupRotor(char* rotorFile, int rotorNumberInput) {
   numberOfNotches = j;
 
   infile.close();
-
 
   return 0;
 
@@ -123,8 +156,10 @@ int Rotor::backward(int characterIndex) {
     }
   }
 
+  // Index Position is normalised after each change is applied
   normaliseIndexPosition(characterIndex);
 
+  // Remove the relative Rotor positioning
   characterIndex = characterIndex - findCurrentPositionOfRotor();
   normaliseIndexPosition(characterIndex);
 

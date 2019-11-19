@@ -1,6 +1,5 @@
 // Author: Louis Heery (lah119)
 
-
 #include <iostream>
 #include <fstream>
 #include <cstdio>
@@ -27,16 +26,15 @@ void normaliseIndexPosition(int &indexPosition) {
 
 }
 
-
 char alphabetIndexToChar(int index) {
 
+  // Character = (Alphabet Index + 65)
   char characterEquivalent = (char) (index + 65);
   return characterEquivalent;
-
 }
 
 int charToAlphabetIndex(char character) {
-
+  // Alphabet = (Character - 65)
   int indexEquivalent = ((int) character) - 65;
   return indexEquivalent;
 }

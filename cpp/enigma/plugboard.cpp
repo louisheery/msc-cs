@@ -1,6 +1,5 @@
 // Author: Louis Heery (lah119)
 
-
 #include <iostream>
 #include <fstream>
 #include <cstdio>
@@ -19,76 +18,55 @@ Plugboard::Plugboard(char* plugboardFile) {
   setupPlugboard(plugboardFile);
 }
 
-int Plugboard::setupPlugboard(char* plugboardFile) {
+void Plugboard::setupPlugboard(char* plugboardFile) {
 
   int i = 0;
-  int currentNumber;
-  //int currentNumberOriginal;
+  int currentNumber; // Stores current integer being read in from setup file
   int firstNumber; // Stores first Letter in Pair of Connected letters being inputted
   bool hasBeenConnected[26]; // Remembers if a letter is already connected to another
   fill_n(hasBeenConnected, 26, false);
 
   // Create in file stream, and check file was opened correctly
-  ifstream infile;
-  infile.open(plugboardFile);
-  if (infile.fail())
-  {
-    cerr << "ERROR OPENING CONFIGURATION FILE named " << plugboardFile << endl;
-    throw ERROR_OPENING_CONFIGURATION_FILE;
-  }
+  ifstream infilechecker;
+  infilechecker.open(plugboardFile);
 
-/*
-  while (!infile.eof()) {
+  // Loops through each input number to check for non-numeric characters
+  while (!infilechecker.eof()) {
 
-    infile >> currentNumberOriginal;
+    // Removes any whitespace from input file.
+    infilechecker >> ws;
 
-    if (infile.peek() == EOF) {
-      cout << "@";
+    if (infilechecker.peek() == EOF) {
       break;
     }
 
-    infile >> currentNumber;
+    infilechecker >> currentNumber;
 
-    if (infile.fail()) {
-      cerr << "ERROR 4 : NON_NUMERIC_CHARACTER";
+    // Will fail if inputted value is not an integer
+    if(infilechecker.fail()){
+      cerr << "Non-numeric character in plugboard file " << plugboardFile << endl;
       throw NON_NUMERIC_CHARACTER;
     }
 
-    if (currentNumber < 0 || currentNumber >= 26) {
-      cerr << "Plugboard configuration file " << plugboardFile << " contains a number not in the alphabet " << currentNumber << ". Exiting..." << endl;
-      throw INVALID_INDEX;
-    }
+}
+  infilechecker.close();
 
-  }
-
-  infile.close();
-
+  // Create in file stream
+  ifstream infile;
   infile.open(plugboardFile);
 
-*/
+  if(!infile.is_open())
+  {
+    cerr << "Could not open plugboard configuration file named: " << plugboardFile << endl;
+    throw ERROR_OPENING_CONFIGURATION_FILE;
+  }
 
-  // Loops through each input number
-  /*
-  while (!infile.eof()) {
-
-    if (infile.peek() == EOF) {
-      break;
-    }
-
-    infile >> currentNumber;
-*/
 
   while (infile >> currentNumber) {
 
-    // Checks that inputted value is an integer
-    if ((int) currentNumber != currentNumber) {
-      cerr << "Non-numeric character in plugboard file " << plugboardFile;
-      throw INVALID_INPUT_CHARACTER;
-    }
-
     // Checks that inputted value is in range of Alphabet index
     if (currentNumber < 0 || currentNumber > 25) {
-      cerr << "ERROR 3 : INVALID_INDEX" << endl;
+      cerr << "Plugboard configuration file " << plugboardFile << " contains a non-alphabet character" << endl;
       throw INVALID_INDEX;
     }
 
@@ -97,7 +75,7 @@ int Plugboard::setupPlugboard(char* plugboardFile) {
       firstNumber = currentNumber;
     } else {
       if (currentNumber == firstNumber) {
-        cerr << "Incorrect number of parameters in plugboard file " << plugboardFile << endl;
+        cerr << "Plugboard file named " << plugboardFile << " tried to connect a letter (index = " << firstNumber << ") to itself" << endl;
         throw IMPOSSIBLE_PLUGBOARD_CONFIGURATION;
       }
     }
@@ -105,7 +83,7 @@ int Plugboard::setupPlugboard(char* plugboardFile) {
     // Checks that letter isn't being connected to multiple letters
     if (hasBeenConnected[i] == true) {
       cerr << "Incorrect number of parameters in plugboard file " << plugboardFile << endl;
-      throw IMPOSSIBLE_PLUGBOARD_CONFIGURATION;
+      throw INCORRECT_NUMBER_OF_PLUGBOARD_PARAMETERS;
     } else {
       plugboardConnections[i] = currentNumber;
       hasBeenConnected[i] = true;
@@ -113,23 +91,21 @@ int Plugboard::setupPlugboard(char* plugboardFile) {
     i++;
   }
 
+  // Check correct number of plugboard parameters have been entered
   if (i > 26) {
-    cerr << "Incorrect (odd) number of parameters in plugboard file " << plugboardFile << endl;
-    throw INCORRECT_NUMBER_OF_REFLECTOR_PARAMETERS;
-  }
-
-  // Checks if an even number of Index parameters were inputted
-  if (i%2 > 0) {
     cerr << "Incorrect number of parameters in plugboard file " << plugboardFile << endl;
     throw INCORRECT_NUMBER_OF_PLUGBOARD_PARAMETERS;
   }
 
-  // sets the total number of Connectioned Letters made (each connection counts as 2 contacts)
+  if (i%2 == 1) {
+    cerr << "Incorrect number of parameters in plugboard file " << plugboardFile << endl;
+    throw INCORRECT_NUMBER_OF_PLUGBOARD_PARAMETERS;
+  }
+
+  // Sets the total number of Connectioned Letters made (each connection counts as 2 contacts)
   numberOfConnectionedLetters = i;
 
   infile.close();
-
-  return 0;
 
 }
 
