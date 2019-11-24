@@ -9,7 +9,7 @@ Repository containing the Coursework &amp; Projects completed as part of my MSc 
 ### [C++](cpp)
 - [Sudoku](cpp/sudoku) – a sudoku solver
 - [Enigma](cpp/enigma) – an enigma machine simulation
-- [Sudoku](cpp/mailpunk) – a simple terminal-based mail client
+- [MailPunk](cpp/mailpunk) – a simple terminal-based mail client
 
 ### [Databases](databases)
 
