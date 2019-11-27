@@ -11,7 +11,9 @@ Repository containing the Coursework &amp; Projects completed as part of my MSc 
 - [Enigma](cpp/enigma) – an enigma machine simulation
 - [MailPunk](cpp/mailpunk) – a simple terminal-based mail client
 
+<!--
 ### [Databases](databases)
+-->
 
 ##
 *Note: Code will continuously be added throughout the year.*
