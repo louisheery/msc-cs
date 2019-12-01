@@ -11,7 +11,6 @@ Repository containing the Coursework &amp; Projects completed as part of my MSc 
 - [Enigma](cpp/enigma) – an enigma machine simulation
 - [MailPunk](cpp/mailpunk) – a simple terminal-based mail client
 
-## Repo Contents
 ### [OS](os)
 - [Producer Consumer](os/producerconsumer) – a POTIX C++ Producer Consumer Implementation Program
 
