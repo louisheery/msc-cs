@@ -10,6 +10,7 @@ Repository containing the Coursework &amp; Projects completed as part of my MSc 
 - [Sudoku](cpp/sudoku) – a sudoku solver
 - [Enigma](cpp/enigma) – an enigma machine simulation
 - [MailPunk](cpp/mailpunk) – a simple terminal-based mail client
+- [Chess](cpp/chess) – a chess simulation game
 
 ### [OS](os)
 - [Producer Consumer](os/producerconsumer) – a POTIX C++ Producer Consumer Implementation Program
