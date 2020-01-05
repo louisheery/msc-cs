@@ -12,6 +12,13 @@ Repository containing the Coursework &amp; Projects completed as part of my MSc 
 - [MailPunk](cpp/mailpunk) – a simple terminal-based mail client
 - [Chess](cpp/chess) – a chess simulation game
 
+#### C++ Micro-program Exercises
+- [Doublets](cpp/doublets) – C++ Micro-program on Doublets (see: en.wikipedia.org/wiki/Doublet_(linguistics))
+- [Substring](cpp/substring) – C++ Micro-program on Substrings of Strings of Text
+- [Words](cpp/words) – C++ Micro-program on Anagrams and Palindromes
+- [Correct](cpp/correct) – C++ Micro-program on Error-correcting for Binary Transmission of Information over a Network
+
+
 ### [OS](os)
 - [Producer Consumer](os/producerconsumer) – a POTIX C++ Producer Consumer Implementation Program
 
